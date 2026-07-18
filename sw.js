@@ -7,10 +7,23 @@ const ASSETS_TO_CACHE = [
   './icons/icon-512.png'
 ];
 
-// Instala e guarda os arquivos principais do app em cache
+// Instala e guarda os arquivos principais do app em cache.
+// Cada arquivo é cacheado individualmente: se um faltar (ex: ícone com
+// caminho errado), isso não derruba a instalação do service worker inteiro.
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS_TO_CACHE))
+    caches.open(CACHE_NAME).then((cache) =>
+      Promise.all(
+        ASSETS_TO_CACHE.map((url) =>
+          fetch(url)
+            .then((response) => {
+              if (response.ok) return cache.put(url, response);
+              console.warn('[sw] não consegui cachear (resposta não-ok):', url, response.status);
+            })
+            .catch((err) => console.warn('[sw] não consegui cachear:', url, err))
+        )
+      )
+    )
   );
   self.skipWaiting();
 });

@@ -5,73 +5,130 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Boa Vista 2026</title>
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#1e293b">
+    <meta name="theme-color" content="#1f3d33">
     <link rel="icon" href="icons/icon-192.png">
     <link rel="apple-touch-icon" href="icons/icon-192.png">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Agenda BV">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Playfair+Display:ital,wght@0,700;0,800;1,600&family=Inter:wght@500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-body: #f8fafc;
-            --bg-card: #ffffff;
-            --text-main: #1e293b;
-            --text-muted: #94a3b8;
-            --sunday-bg: #fff1f2;
-            --saturday-bg: #f1f5f9;
-            --accent-blue: #3b82f6;
-            --accent-red: #f87171;
-            --accent-amber: #fbbf24;
-            --accent-green: #22c55e;
+            --body-bg: #ded2b8;
+            --paper: #f8f2e4;
+            --paper-alt: #efe4cb;
+            --rule-line: #e0d3ac;
+            --cover: #1f3d33;
+            --cover-dark: #14261f;
+            --gold: #b8894f;
+            --ink: #2c2620;
+            --ink-muted: #8a7f6a;
+            --red-ink: #b3413a;
+            --blue-ink: #2f5d8a;
+            --amber-ink: #a9762a;
+            --amber-bg: #f0d78a;
+            --green-ink: #3f7d55;
+            --accent-red: #b3413a;
+            --accent-amber: #cf9d3f;
+            --accent-green: #3f7d55;
+            --accent-blue: #2f5d8a;
         }
 
+        * { box-sizing: border-box; }
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--bg-body);
-            color: var(--text-main);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background:
+                radial-gradient(ellipse at 50% 0%, #eadfc4 0%, var(--body-bg) 70%);
+            color: var(--ink);
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
             margin: 0;
-            padding: 10px;
-            box-sizing: border-box;
+            padding: 14px;
         }
 
         .main-container {
-            background: var(--bg-card);
-            border-radius: 24px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            position: relative;
+            background: var(--paper);
+            background-image: repeating-linear-gradient(
+                to bottom,
+                transparent 0px, transparent 27px,
+                var(--rule-line) 27px, var(--rule-line) 28px
+            );
+            border-radius: 6px 18px 18px 6px;
+            box-shadow:
+                0 2px 0 rgba(0,0,0,0.04) inset,
+                0 18px 40px rgba(20, 20, 10, 0.28),
+                0 3px 8px rgba(20, 20, 10, 0.15);
             width: 100%;
             max-width: 850px;
             height: 92vh;
             display: flex;
             flex-direction: column;
             overflow: hidden;
-            border: 1px solid #e2e8f0;
+            padding-left: 34px;
+        }
+
+        .binding {
+            position: absolute;
+            left: 0; top: 0; bottom: 0;
+            width: 34px;
+            background: linear-gradient(to right, var(--cover-dark), var(--cover) 60%, var(--cover) 100%);
+            border-radius: 6px 0 0 6px;
+            box-shadow: inset -4px 0 8px rgba(0,0,0,0.25);
+        }
+
+        .binding::before {
+            content: '';
+            position: absolute;
+            left: 50%; top: 14px; bottom: 14px;
+            width: 13px;
+            transform: translateX(-50%);
+            background-image: radial-gradient(circle, var(--paper) 3.6px, transparent 4px);
+            background-size: 100% 26px;
+            background-repeat: repeat-y;
+        }
+
+        .ribbon {
+            position: absolute;
+            right: 26px;
+            top: 0;
+            width: 16px;
+            height: 46px;
+            background: var(--red-ink);
+            clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 78%, 0 100%);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            z-index: 5;
         }
 
         header {
-            padding: 15px 20px;
+            padding: 18px 22px 12px 24px;
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid #f1f5f9;
+            align-items: flex-start;
         }
 
         .brand h1 {
             margin: 0;
-            font-size: 1.25rem;
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
             font-weight: 800;
+            font-size: 1.7rem;
+            color: var(--ink);
+            letter-spacing: 0.3px;
         }
 
         .brand p {
-            margin: 2px 0 0 0;
-            font-size: 9px;
+            margin: 2px 0 0 1px;
+            font-size: 9.5px;
             font-weight: 700;
-            color: var(--text-muted);
+            color: var(--gold);
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 2px;
         }
 
         .header-right {
@@ -83,150 +140,182 @@
         .nav-controls {
             display: flex;
             align-items: center;
-            gap: 10px;
-            background: #f8fafc;
+            gap: 8px;
+            background: var(--paper-alt);
             padding: 5px;
-            border-radius: 12px;
-            border: 1px solid #e2e8f0;
+            border-radius: 20px;
+            border: 1px solid var(--rule-line);
         }
 
         .nav-btn {
             background: none;
             border: none;
-            padding: 8px;
+            padding: 7px 9px;
             cursor: pointer;
-            color: var(--text-muted);
-            border-radius: 8px;
+            color: var(--ink-muted);
+            border-radius: 50%;
             display: flex;
             align-items: center;
+            font-size: 12px;
         }
 
         .nav-btn:hover {
-            background: white;
-            color: var(--text-main);
+            background: var(--paper);
+            color: var(--cover);
         }
 
         .sync-btn {
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
+            background: var(--paper-alt);
+            border: 1px solid var(--rule-line);
             padding: 8px 10px;
             cursor: pointer;
-            color: var(--text-muted);
-            border-radius: 10px;
-            font-size: 14px;
+            color: var(--ink-muted);
+            border-radius: 50%;
+            font-size: 13px;
             position: relative;
         }
 
-        .sync-btn:hover { background: white; color: var(--text-main); }
+        .sync-btn:hover { background: var(--paper); color: var(--cover); }
 
         .sync-dot {
             width: 7px;
             height: 7px;
             border-radius: 50%;
             position: absolute;
-            top: 4px;
-            right: 4px;
+            top: 3px;
+            right: 3px;
+            border: 1.5px solid var(--paper-alt);
         }
 
-        .sync-ok { background: var(--accent-green); }
-        .sync-off { background: var(--accent-red); }
+        .sync-ok { background: var(--green-ink); }
+        .sync-off { background: var(--red-ink); }
+        .sync-neutral { background: #b3a98e; }
 
         #monthDisplay {
-            font-size: 12px;
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
             font-weight: 700;
-            min-width: 100px;
+            font-size: 13px;
+            min-width: 92px;
             text-align: center;
-            text-transform: uppercase;
+            color: var(--ink);
         }
 
         .weekdays {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
-            padding: 10px 10px 0 10px;
+            padding: 4px 16px 4px 16px;
             text-align: center;
+            border-bottom: 2px solid var(--gold);
+            margin: 0 6px;
         }
 
         .weekdays div {
             font-size: 9px;
-            font-weight: 900;
+            font-weight: 800;
             text-transform: uppercase;
-            color: var(--text-muted);
+            letter-spacing: 1px;
+            color: var(--ink-muted);
+            padding-bottom: 6px;
         }
 
-        .weekdays .dom { color: var(--accent-red); }
+        .weekdays .dom { color: var(--red-ink); }
 
         #calendarGrid {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
             grid-template-rows: repeat(6, 1fr);
-            gap: 4px;
-            padding: 10px;
+            gap: 1px;
+            padding: 6px 12px 8px 12px;
             flex-grow: 1;
         }
 
         .day-cell {
-            background: white;
-            border-radius: 10px;
-            padding: 5px;
+            background: transparent;
+            border-radius: 4px;
+            padding: 4px 5px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             cursor: pointer;
             position: relative;
             border: 1px solid transparent;
-            transition: transform 0.1s;
+            border-bottom: 1px solid var(--rule-line);
+            transition: transform 0.12s, background 0.12s;
         }
 
         .day-cell:hover {
-            border-color: #cbd5e1;
+            background: rgba(184, 137, 79, 0.10);
             transform: translateY(-1px);
         }
 
-        .day-cell.bg-sunday { background-color: var(--sunday-bg); }
-        .day-cell.bg-saturday { background-color: var(--saturday-bg); }
+        .day-cell.bg-sunday { background-color: rgba(179, 65, 58, 0.06); }
+        .day-cell.bg-saturday { background-color: rgba(44, 38, 32, 0.035); }
+
+        .day-cell.is-today {
+            background-color: rgba(184, 137, 79, 0.16);
+            box-shadow: inset 0 0 0 1.5px var(--gold);
+        }
+
+        .day-cell.is-today .day-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--cover);
+            color: var(--paper) !important;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            font-size: 10px;
+        }
 
         .day-num {
             font-size: 11px;
             font-weight: 700;
+            font-variant-numeric: oldstyle-nums;
         }
 
         .badge-status {
-            font-size: 7px;
-            padding: 2px 0;
-            border-radius: 4px;
+            font-size: 6.6px;
+            padding: 2px 1px;
+            border-radius: 2px;
             font-weight: 800;
             text-align: center;
             color: white;
             text-transform: uppercase;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.18);
         }
 
-        .badge-feriado { background-color: var(--accent-red); }
-        .badge-facultativo { background-color: #fcd34d; color: #78350f; }
-        .badge-pagamento { background-color: var(--accent-green); }
-        .badge-extra { background-color: var(--accent-blue); }
+        .badge-feriado { background-color: var(--red-ink); }
+        .badge-facultativo { background-color: var(--amber-bg); color: #6b4a12; }
+        .badge-pagamento { background-color: var(--green-ink); }
+        .badge-extra { background-color: var(--blue-ink); }
 
-        .note-dot {
-            width: 4px;
-            height: 4px;
-            background-color: var(--accent-blue);
-            border-radius: 50%;
-            position: absolute;
-            top: 5px;
-            right: 5px;
+        .note-preview {
+            font-family: 'Caveat', cursive;
+            font-size: 14px;
+            line-height: 1;
+            font-weight: 700;
+            color: var(--blue-ink);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            max-width: 100%;
+            transform: rotate(-2deg);
+            transform-origin: left center;
         }
 
         footer {
-            padding: 12px 20px;
-            border-top: 1px solid #f1f5f9;
+            padding: 10px 22px 14px 24px;
+            border-top: 1px dashed var(--rule-line);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: #fafafa;
         }
 
         .legend {
             display: flex;
-            gap: 10px;
+            gap: 12px;
         }
 
         .legend-item {
@@ -235,8 +324,9 @@
             gap: 4px;
             font-size: 8px;
             font-weight: 700;
-            color: #64748b;
+            color: var(--ink-muted);
             text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .dot { width: 6px; height: 6px; border-radius: 50%; }
@@ -245,76 +335,105 @@
             text-align: right;
             font-size: 8px;
             font-weight: 700;
-            color: #94a3b8;
+            color: var(--ink-muted);
+            font-style: italic;
         }
 
         .creator-name {
-            color: #64748b;
-            text-transform: uppercase;
+            color: var(--cover);
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            font-size: 10px;
+            text-transform: none;
         }
 
         .modal-overlay {
             display: none;
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.4);
+            background: rgba(20, 16, 10, 0.45);
             z-index: 50;
             align-items: center;
             justify-content: center;
         }
 
         .modal-box {
-            background: white;
+            background: var(--paper);
+            background-image: repeating-linear-gradient(
+                to bottom, transparent 0px, transparent 25px, var(--rule-line) 25px, var(--rule-line) 26px
+            );
             width: 90%;
             max-width: 320px;
-            border-radius: 20px;
-            padding: 20px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            border-radius: 4px 14px 14px 4px;
+            padding: 22px;
+            box-shadow: 0 16px 34px rgba(0,0,0,0.28);
+            position: relative;
+            border-left: 8px solid var(--cover);
+            transform: rotate(-0.4deg);
         }
 
         .modal-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 15px;
+            margin-bottom: 14px;
+        }
+
+        .modal-header h3 {
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
         }
 
         textarea, input[type="text"] {
             width: 100%;
-            border: 1px solid #e2e8f0;
-            border-radius: 12px;
+            border: 1px solid var(--rule-line);
+            background: rgba(255,255,255,0.5);
+            border-radius: 8px;
             padding: 10px;
-            font-family: inherit;
+            font-family: 'Caveat', cursive;
+            font-size: 18px;
+            color: var(--blue-ink);
             resize: none;
             box-sizing: border-box;
             margin-bottom: 15px;
-            font-size: 14px;
         }
 
-        .btn-group { display: flex; gap: 8px; }
-        .btn-save { flex: 1; background: #1e293b; color: white; border: none; padding: 10px; border-radius: 10px; font-weight: 700; cursor: pointer; }
-        .btn-del { background: #fee2e2; color: #ef4444; border: none; padding: 10px; border-radius: 10px; cursor: pointer; }
-        .btn-secondary { flex: 1; background: #f1f5f9; color: #1e293b; border: none; padding: 10px; border-radius: 10px; font-weight: 700; cursor: pointer; }
+        input[type="text"] { font-family: 'Inter', sans-serif; font-size: 13px; color: var(--ink); }
 
-        .sync-info { font-size: 12px; color: #64748b; margin-bottom: 10px; line-height: 1.5; }
-        .sync-code-display { font-family: monospace; font-size: 18px; font-weight: 800; letter-spacing: 2px; background: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 10px; padding: 10px; text-align: center; margin-bottom: 15px; }
+        .btn-group { display: flex; gap: 8px; }
+        .btn-save { flex: 1; background: var(--cover); color: var(--paper); border: none; padding: 10px; border-radius: 8px; font-weight: 700; cursor: pointer; }
+        .btn-save:hover { background: var(--cover-dark); }
+        .btn-del { background: #f3dbd8; color: var(--red-ink); border: none; padding: 10px; border-radius: 8px; cursor: pointer; }
+        .btn-secondary { flex: 1; background: var(--paper-alt); color: var(--ink); border: 1px solid var(--rule-line); padding: 10px; border-radius: 8px; font-weight: 700; cursor: pointer; }
+
+        .sync-info { font-size: 12px; color: var(--ink-muted); margin-bottom: 10px; line-height: 1.5; }
+        .sync-code-display { font-family: 'Inter', monospace; font-size: 16px; font-weight: 800; letter-spacing: 1px; background: var(--paper-alt); border: 1px dashed var(--gold); border-radius: 8px; padding: 10px; text-align: center; margin-bottom: 15px; color: var(--cover); }
         .status-line { font-size: 11px; margin-bottom: 10px; }
 
         @media (max-width: 600px) {
-            .main-container { height: 98vh; border-radius: 0; }
+            .main-container { height: 98vh; border-radius: 0; padding-left: 26px; }
+            .binding { width: 26px; }
+            .ribbon { display: none; }
+            .brand h1 { font-size: 1.25rem; }
+            header { padding: 14px 14px 10px 18px; }
         }
     </style>
 </head>
 <body>
 
     <div class="main-container">
+        <div class="binding"></div>
+        <div class="ribbon"></div>
         <header>
             <div class="brand">
                 <h1>Boa Vista</h1>
-                <p>Oficial 2026</p>
+                <p>Agenda Oficial &middot; 2026</p>
             </div>
             <div class="header-right">
                 <button id="installBtn" class="sync-btn" title="Instalar aplicativo" style="display:none;">⬇️</button>
+                <button id="notifyBtn" class="sync-btn" title="Notificações">
+                    🔔<span id="notifyDot" class="sync-dot sync-off"></span>
+                </button>
                 <button id="syncToggle" class="sync-btn" title="Sincronização">
                     🔄<span id="syncDot" class="sync-dot sync-off"></span>
                 </button>
@@ -340,14 +459,14 @@
 
         <footer>
             <div class="legend">
-                <div class="legend-item"><div class="dot" style="background:var(--accent-red)"></div>Fer.</div>
-                <div class="legend-item"><div class="dot" style="background:#fcd34d"></div>Fac.</div>
-                <div class="legend-item"><div class="dot" style="background:var(--accent-green)"></div>Pag.</div>
-                <div class="legend-item"><div class="dot" style="background:var(--accent-blue)"></div>13º</div>
+                <div class="legend-item"><div class="dot" style="background:var(--red-ink)"></div>Fer.</div>
+                <div class="legend-item"><div class="dot" style="background:var(--amber-bg)"></div>Fac.</div>
+                <div class="legend-item"><div class="dot" style="background:var(--green-ink)"></div>Pag.</div>
+                <div class="legend-item"><div class="dot" style="background:var(--blue-ink)"></div>13º</div>
             </div>
             <div class="creator-info">
-                CRIADO POR:<br>
-                <span class="creator-name">Paulo Xavier - CRP-20/09816</span>
+                CRIADO POR<br>
+                <span class="creator-name">Paulo Xavier — CRP-20/09816</span>
             </div>
         </footer>
     </div>
@@ -356,7 +475,7 @@
     <div id="noteModal" class="modal-overlay" onclick="if(event.target == this) closeModal()">
         <div class="modal-box">
             <div class="modal-header">
-                <h3 id="modalDate" style="margin:0; font-size: 16px;">Data</h3>
+                <h3 id="modalDate" style="margin:0; font-size: 18px;">Data</h3>
                 <button onclick="closeModal()" style="background:none; border:none; font-size: 20px; cursor:pointer; color:#ccc;">&times;</button>
             </div>
             <textarea id="noteInput" rows="3" placeholder="Escrever nota..."></textarea>
@@ -371,7 +490,7 @@
     <div id="syncModal" class="modal-overlay" onclick="if(event.target == this) closeSyncModal()">
         <div class="modal-box">
             <div class="modal-header">
-                <h3 style="margin:0; font-size: 16px;">Sincronização</h3>
+                <h3 style="margin:0; font-size: 18px;">Sincronização</h3>
                 <button onclick="closeSyncModal()" style="background:none; border:none; font-size: 20px; cursor:pointer; color:#ccc;">&times;</button>
             </div>
             <div id="syncStatusLine" class="status-line"></div>
@@ -414,7 +533,8 @@
 
         const monthNames = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
         const year = 2026;
-        let currentMonth = 0;
+        const today = new Date();
+        let currentMonth = (today.getFullYear() === year) ? today.getMonth() : 0;
         let selectedKey = "";
         let notesCache = {};
         let unsubscribeListener = null;
@@ -490,6 +610,7 @@
                     snapshot.forEach(doc => { notesCache[doc.id] = doc.data().text; });
                     updateSyncIndicator(true);
                     render();
+                    checkTodayNotifications(false);
                 }, err => {
                     console.error(err);
                     updateSyncIndicator(false);
@@ -504,11 +625,11 @@
                 display.style.display = 'block';
                 display.innerText = syncCode;
                 statusLine.innerHTML = firebaseReady
-                    ? '<span style="color:var(--accent-green)">● Conectado</span>'
-                    : '<span style="color:var(--accent-red)">● Firebase não configurado</span>';
+                    ? '<span style="color:var(--green-ink)">● Conectado</span>'
+                    : '<span style="color:var(--red-ink)">● Firebase não configurado</span>';
             } else {
                 display.style.display = 'none';
-                statusLine.innerHTML = '<span style="color:var(--text-muted)">Nenhum código definido ainda</span>';
+                statusLine.innerHTML = '<span style="color:var(--ink-muted)">Nenhum código definido ainda</span>';
             }
         }
 
@@ -529,6 +650,74 @@
         }
 
         document.getElementById('syncToggle').onclick = openSyncModal;
+
+        // ======= NOTIFICAÇÕES =======
+
+        function updateNotifyIndicator() {
+            const dot = document.getElementById('notifyDot');
+            if (!('Notification' in window)) { dot.className = 'sync-dot sync-neutral'; return; }
+            if (Notification.permission === 'granted') dot.className = 'sync-dot sync-ok';
+            else if (Notification.permission === 'denied') dot.className = 'sync-dot sync-off';
+            else dot.className = 'sync-dot sync-neutral';
+        }
+
+        async function showTodayNotification(title, body) {
+            if ('serviceWorker' in navigator) {
+                try {
+                    const reg = await navigator.serviceWorker.ready;
+                    reg.showNotification(title, { body, icon: 'icons/icon-192.png', badge: 'icons/icon-192.png', tag: 'bv-today' });
+                    return;
+                } catch (e) { /* cai para notificação simples abaixo */ }
+            }
+            new Notification(title, { body, icon: 'icons/icon-192.png' });
+        }
+
+        function checkTodayNotifications(forceShow) {
+            if (!('Notification' in window) || Notification.permission !== 'granted') return;
+
+            const now = new Date();
+            if (now.getFullYear() !== year) return;
+            const key = year + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0');
+            const note = notesCache[key];
+            const info = dataInfo[key];
+
+            if (!note && !info) {
+                if (forceShow) showTodayNotification('Agenda Boa Vista', 'Você não tem anotações para hoje.');
+                return;
+            }
+
+            const parts = [];
+            if (info) parts.push(info.label.replace(/\.$/, ''));
+            if (note) parts.push(note);
+            const body = parts.join(' • ');
+
+            const notifiedKey = 'bv_notified_' + key;
+            const notifiedHash = btoa(unescape(encodeURIComponent(body))).slice(0, 60);
+            if (!forceShow && localStorage.getItem(notifiedKey) === notifiedHash) return;
+
+            showTodayNotification('Agenda Boa Vista — Hoje', body);
+            localStorage.setItem(notifiedKey, notifiedHash);
+        }
+
+        document.getElementById('notifyBtn').onclick = async () => {
+            if (!('Notification' in window)) {
+                alert('Este navegador não suporta notificações.');
+                return;
+            }
+            if (Notification.permission === 'denied') {
+                alert('As notificações estão bloqueadas para este site. Para ativar, abra as configurações do navegador/app e permita notificações para esta página.');
+                return;
+            }
+            if (Notification.permission === 'default') {
+                const result = await Notification.requestPermission();
+                updateNotifyIndicator();
+                if (result !== 'granted') return;
+            }
+            updateNotifyIndicator();
+            checkTodayNotifications(true);
+        };
+
+        updateNotifyIndicator();
 
         // ======= NOTAS =======
 
@@ -561,6 +750,14 @@
 
         // ======= CALENDÁRIO =======
 
+        function escapeHtml(str) {
+            return str
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;');
+        }
+
         function render() {
             const grid = document.getElementById('calendarGrid');
             const display = document.getElementById('monthDisplay');
@@ -584,11 +781,20 @@
                     if (wd === 0) cell.classList.add('bg-sunday');
                     else if (wd === 6) cell.classList.add('bg-saturday');
 
-                    let html = '<span class="day-num" style="color:' + (wd === 0 ? 'var(--accent-red)' : 'var(--text-main)') + '">' + d + '</span>';
-                    if (note) html += '<div class="note-dot"></div>';
+                    if (today.getFullYear() === year && today.getMonth() === currentMonth && today.getDate() === d) {
+                        cell.classList.add('is-today');
+                    }
+
+                    let html = '<span class="day-num" style="color:' + (wd === 0 ? 'var(--red-ink)' : 'var(--ink)') + '">' + d + '</span>';
+                    if (note) {
+                        const preview = escapeHtml(note.length > 14 ? note.substring(0, 14) + '…' : note);
+                        const tilt = (d % 2 === 0) ? '-2deg' : '1.5deg';
+                        html += '<div class="note-preview" style="transform:rotate(' + tilt + ')" title="' + escapeHtml(note) + '">' + preview + '</div>';
+                    }
 
                     if (info) {
-                        html += '<div class="badge-status ' + info.type + '">' + info.label + '</div>';
+                        const tilt2 = (d % 3 === 0) ? '1deg' : '-1deg';
+                        html += '<div class="badge-status ' + info.type + '" style="transform:rotate(' + tilt2 + ')">' + info.label + '</div>';
                     }
 
                     cell.innerHTML = html;
@@ -605,6 +811,7 @@
         document.getElementById('next').onclick = () => { currentMonth = (currentMonth + 1) % 12; render(); };
 
         render();
+        checkTodayNotifications(false);
 
         if (syncCode) {
             connectSync(syncCode);

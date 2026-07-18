@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Boa Vista 2026</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#1e293b">
+    <link rel="icon" href="icons/icon-192.png">
+    <link rel="apple-touch-icon" href="icons/icon-192.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Agenda BV">
+    <style>
+        :root {
+            --bg-body: #f8fafc;
+            --bg-card: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #94a3b8;
+            --sunday-bg: #fff1f2;
+            --saturday-bg: #f1f5f9;
+            --accent-blue: #3b82f6;
+            --accent-red: #f87171;
+            --accent-amber: #fbbf24;
+            --accent-green: #22c55e;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+
+        .main-container {
+            background: var(--bg-card);
+            border-radius: 24px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            width: 100%;
+            max-width: 850px;
+            height: 92vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+        }
+
+        header {
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .brand h1 {
+            margin: 0;
+            font-size: 1.25rem;
+            font-weight: 800;
+        }
+
+        .brand p {
+            margin: 2px 0 0 0;
+            font-size: 9px;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #f8fafc;
+            padding: 5px;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .nav-btn {
+            background: none;
+            border: none;
+            padding: 8px;
+            cursor: pointer;
+            color: var(--text-muted);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-btn:hover {
+            background: white;
+            color: var(--text-main);
+        }
+
+        .sync-btn {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 8px 10px;
+            cursor: pointer;
+            color: var(--text-muted);
+            border-radius: 10px;
+            font-size: 14px;
+            position: relative;
+        }
+
+        .sync-btn:hover { background: white; color: var(--text-main); }
+
+        .sync-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            position: absolute;
+            top: 4px;
+            right: 4px;
+        }
+
+        .sync-ok { background: var(--accent-green); }
+        .sync-off { background: var(--accent-red); }
+
+        #monthDisplay {
+            font-size: 12px;
+            font-weight: 700;
+            min-width: 100px;
+            text-align: center;
+            text-transform: uppercase;
+        }
+
+        .weekdays {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            padding: 10px 10px 0 10px;
+            text-align: center;
+        }
+
+        .weekdays div {
+            font-size: 9px;
+            font-weight: 900;
+            text-transform: uppercase;
+            color: var(--text-muted);
+        }
+
+        .weekdays .dom { color: var(--accent-red); }
+
+        #calendarGrid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            grid-template-rows: repeat(6, 1fr);
+            gap: 4px;
+            padding: 10px;
+            flex-grow: 1;
+        }
+
+        .day-cell {
+            background: white;
+            border-radius: 10px;
+            padding: 5px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            cursor: pointer;
+            position: relative;
+            border: 1px solid transparent;
+            transition: transform 0.1s;
+        }
+
+        .day-cell:hover {
+            border-color: #cbd5e1;
+            transform: translateY(-1px);
+        }
+
+        .day-cell.bg-sunday { background-color: var(--sunday-bg); }
+        .day-cell.bg-saturday { background-color: var(--saturday-bg); }
+
+        .day-num {
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .badge-status {
+            font-size: 7px;
+            padding: 2px 0;
+            border-radius: 4px;
+            font-weight: 800;
+            text-align: center;
+            color: white;
+            text-transform: uppercase;
+        }
+
+        .badge-feriado { background-color: var(--accent-red); }
+        .badge-facultativo { background-color: #fcd34d; color: #78350f; }
+        .badge-pagamento { background-color: var(--accent-green); }
+        .badge-extra { background-color: var(--accent-blue); }
+
+        .note-dot {
+            width: 4px;
+            height: 4px;
+            background-color: var(--accent-blue);
+            border-radius: 50%;
+            position: absolute;
+            top: 5px;
+            right: 5px;
+        }
+
+        footer {
+            padding: 12px 20px;
+            border-top: 1px solid #f1f5f9;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #fafafa;
+        }
+
+        .legend {
+            display: flex;
+            gap: 10px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 8px;
+            font-weight: 700;
+            color: #64748b;
+            text-transform: uppercase;
+        }
+
+        .dot { width: 6px; height: 6px; border-radius: 50%; }
+
+        .creator-info {
+            text-align: right;
+            font-size: 8px;
+            font-weight: 700;
+            color: #94a3b8;
+        }
+
+        .creator-name {
+            color: #64748b;
+            text-transform: uppercase;
+        }
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.4);
+            z-index: 50;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-box {
+            background: white;
+            width: 90%;
+            max-width: 320px;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        textarea, input[type="text"] {
+            width: 100%;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 10px;
+            font-family: inherit;
+            resize: none;
+            box-sizing: border-box;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+
+        .btn-group { display: flex; gap: 8px; }
+        .btn-save { flex: 1; background: #1e293b; color: white; border: none; padding: 10px; border-radius: 10px; font-weight: 700; cursor: pointer; }
+        .btn-del { background: #fee2e2; color: #ef4444; border: none; padding: 10px; border-radius: 10px; cursor: pointer; }
+        .btn-secondary { flex: 1; background: #f1f5f9; color: #1e293b; border: none; padding: 10px; border-radius: 10px; font-weight: 700; cursor: pointer; }
+
+        .sync-info { font-size: 12px; color: #64748b; margin-bottom: 10px; line-height: 1.5; }
+        .sync-code-display { font-family: monospace; font-size: 18px; font-weight: 800; letter-spacing: 2px; background: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 10px; padding: 10px; text-align: center; margin-bottom: 15px; }
+        .status-line { font-size: 11px; margin-bottom: 10px; }
+
+        @media (max-width: 600px) {
+            .main-container { height: 98vh; border-radius: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="main-container">
+        <header>
+            <div class="brand">
+                <h1>Boa Vista</h1>
+                <p>Oficial 2026</p>
+            </div>
+            <div class="header-right">
+                <button id="installBtn" class="sync-btn" title="Instalar aplicativo" style="display:none;">⬇️</button>
+                <button id="syncToggle" class="sync-btn" title="Sincronização">
+                    🔄<span id="syncDot" class="sync-dot sync-off"></span>
+                </button>
+                <div class="nav-controls">
+                    <button id="prev" class="nav-btn">◀</button>
+                    <span id="monthDisplay">Janeiro</span>
+                    <button id="next" class="nav-btn">▶</button>
+                </div>
+            </div>
+        </header>
+
+        <div class="weekdays">
+            <div class="dom">Dom</div>
+            <div>Seg</div>
+            <div>Ter</div>
+            <div>Qua</div>
+            <div>Qui</div>
+            <div>Sex</div>
+            <div>Sáb</div>
+        </div>
+
+        <div id="calendarGrid"></div>
+
+        <footer>
+            <div class="legend">
+                <div class="legend-item"><div class="dot" style="background:var(--accent-red)"></div>Fer.</div>
+                <div class="legend-item"><div class="dot" style="background:#fcd34d"></div>Fac.</div>
+                <div class="legend-item"><div class="dot" style="background:var(--accent-green)"></div>Pag.</div>
+                <div class="legend-item"><div class="dot" style="background:var(--accent-blue)"></div>13º</div>
+            </div>
+            <div class="creator-info">
+                CRIADO POR:<br>
+                <span class="creator-name">Paulo Xavier - CRP-20/09816</span>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Modal de nota -->
+    <div id="noteModal" class="modal-overlay" onclick="if(event.target == this) closeModal()">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3 id="modalDate" style="margin:0; font-size: 16px;">Data</h3>
+                <button onclick="closeModal()" style="background:none; border:none; font-size: 20px; cursor:pointer; color:#ccc;">&times;</button>
+            </div>
+            <textarea id="noteInput" rows="3" placeholder="Escrever nota..."></textarea>
+            <div class="btn-group">
+                <button onclick="saveNote()" class="btn-save">Guardar</button>
+                <button onclick="deleteNote()" class="btn-del">🗑</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de sincronização -->
+    <div id="syncModal" class="modal-overlay" onclick="if(event.target == this) closeSyncModal()">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3 style="margin:0; font-size: 16px;">Sincronização</h3>
+                <button onclick="closeSyncModal()" style="background:none; border:none; font-size: 20px; cursor:pointer; color:#ccc;">&times;</button>
+            </div>
+            <div id="syncStatusLine" class="status-line"></div>
+            <div class="sync-info">Este código conecta suas anotações entre aparelhos. Use o <b>mesmo código</b> em todos os dispositivos onde instalar esta agenda.</div>
+            <div id="syncCodeDisplay" class="sync-code-display" style="display:none;"></div>
+            <input type="text" id="syncCodeInput" placeholder="Digite um código (ex: familia-xavier)">
+            <div class="btn-group">
+                <button onclick="useSyncCode()" class="btn-save">Usar este código</button>
+                <button onclick="generateSyncCode()" class="btn-secondary">Gerar novo</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase (compat) -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
+    <script>
+        // ======= CONFIGURAÇÃO DO FIREBASE =======
+        // Substitua os valores abaixo pelos dados do SEU projeto Firebase
+        // (Console Firebase > Configurações do projeto > Seus apps > Configuração do SDK)
+        const firebaseConfig = {
+            apiKey: "SUA_API_KEY",
+            authDomain: "SEU_PROJETO.firebaseapp.com",
+            projectId: "SEU_PROJETO",
+            storageBucket: "SEU_PROJETO.appspot.com",
+            messagingSenderId: "SEU_SENDER_ID",
+            appId: "SEU_APP_ID"
+        };
+
+        let db = null;
+        let firebaseReady = false;
+        try {
+            firebase.initializeApp(firebaseConfig);
+            db = firebase.firestore();
+            firebaseReady = true;
+        } catch (e) {
+            console.error("Firebase não configurado ainda:", e);
+        }
+
+        const monthNames = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+        const year = 2026;
+        let currentMonth = 0;
+        let selectedKey = "";
+        let notesCache = {};
+        let unsubscribeListener = null;
+        let syncCode = localStorage.getItem('bv_sync_code') || "";
+
+        const dataInfo = {
+            "2026-01-01": { label: "CONF.", type: "badge-feriado" },
+            "2026-01-02": { label: "FAC.", type: "badge-facultativo" },
+            "2026-01-19": { label: "FAC.", type: "badge-facultativo" },
+            "2026-01-20": { label: "S. SEB.", type: "badge-feriado" },
+            "2026-01-30": { label: "PAG.", type: "badge-pagamento" },
+            "2026-02-16": { label: "CAR.", type: "badge-facultativo" },
+            "2026-02-17": { label: "CAR.", type: "badge-facultativo" },
+            "2026-02-18": { label: "CIN.", type: "badge-facultativo" },
+            "2026-02-27": { label: "PAG.", type: "badge-pagamento" },
+            "2026-03-31": { label: "PAG.", type: "badge-pagamento" },
+            "2026-04-02": { label: "FAC.", type: "badge-facultativo" },
+            "2026-04-03": { label: "PAIX.", type: "badge-feriado" },
+            "2026-04-20": { label: "FAC.", type: "badge-facultativo" },
+            "2026-04-21": { label: "TIR.", type: "badge-feriado" },
+            "2026-04-30": { label: "PAG.", type: "badge-pagamento" },
+            "2026-05-01": { label: "TRAB.", type: "badge-feriado" },
+            "2026-05-30": { label: "PAG.", type: "badge-pagamento" },
+            "2026-06-04": { label: "CORP.", type: "badge-feriado" },
+            "2026-06-05": { label: "FAC.", type: "badge-facultativo" },
+            "2026-06-16": { label: "13º SAL.", type: "badge-extra" },
+            "2026-06-29": { label: "S. PED.", type: "badge-feriado" },
+            "2026-06-30": { label: "PAG.", type: "badge-pagamento" },
+            "2026-07-09": { label: "B. VIST.", type: "badge-feriado" },
+            "2026-07-10": { label: "FAC.", type: "badge-facultativo" },
+            "2026-07-31": { label: "PAG.", type: "badge-pagamento" },
+            "2026-08-28": { label: "PAG.", type: "badge-pagamento" },
+            "2026-09-07": { label: "IND.", type: "badge-feriado" },
+            "2026-09-30": { label: "PAG.", type: "badge-pagamento" },
+            "2026-10-05": { label: "ROR.", type: "badge-feriado" },
+            "2026-10-12": { label: "APAR.", type: "badge-feriado" },
+            "2026-10-28": { label: "SERV.", type: "badge-feriado" },
+            "2026-10-30": { label: "PAG.", type: "badge-pagamento" },
+            "2026-11-02": { label: "FIN.", type: "badge-feriado" },
+            "2026-11-15": { label: "REP.", type: "badge-feriado" },
+            "2026-11-20": { label: "C. NEG.", type: "badge-feriado" },
+            "2026-11-27": { label: "PAG.", type: "badge-pagamento" },
+            "2026-12-07": { label: "FAC.", type: "badge-facultativo" },
+            "2026-12-08": { label: "CONC.", type: "badge-feriado" },
+            "2026-12-18": { label: "13º SAL.", type: "badge-extra" },
+            "2026-12-24": { label: "FAC.", type: "badge-facultativo" },
+            "2026-12-25": { label: "NATAL", type: "badge-feriado" },
+            "2026-12-29": { label: "PAG.", type: "badge-pagamento" },
+            "2026-12-31": { label: "FAC.", type: "badge-facultativo" }
+        };
+
+        // ======= SINCRONIZAÇÃO =======
+
+        function updateSyncIndicator(connected) {
+            const dot = document.getElementById('syncDot');
+            dot.className = 'sync-dot ' + (connected ? 'sync-ok' : 'sync-off');
+        }
+
+        function connectSync(code) {
+            if (!firebaseReady) {
+                alert("Firebase ainda não foi configurado neste arquivo. Preencha o firebaseConfig no código antes de sincronizar.");
+                return;
+            }
+            syncCode = code.trim().toLowerCase().replace(/\s+/g, '-');
+            if (!syncCode) return;
+            localStorage.setItem('bv_sync_code', syncCode);
+
+            if (unsubscribeListener) unsubscribeListener();
+
+            unsubscribeListener = db.collection('agendas').doc(syncCode).collection('notes')
+                .onSnapshot(snapshot => {
+                    notesCache = {};
+                    snapshot.forEach(doc => { notesCache[doc.id] = doc.data().text; });
+                    updateSyncIndicator(true);
+                    render();
+                }, err => {
+                    console.error(err);
+                    updateSyncIndicator(false);
+                });
+        }
+
+        function openSyncModal() {
+            document.getElementById('syncModal').style.display = 'flex';
+            const display = document.getElementById('syncCodeDisplay');
+            const statusLine = document.getElementById('syncStatusLine');
+            if (syncCode) {
+                display.style.display = 'block';
+                display.innerText = syncCode;
+                statusLine.innerHTML = firebaseReady
+                    ? '<span style="color:var(--accent-green)">● Conectado</span>'
+                    : '<span style="color:var(--accent-red)">● Firebase não configurado</span>';
+            } else {
+                display.style.display = 'none';
+                statusLine.innerHTML = '<span style="color:var(--text-muted)">Nenhum código definido ainda</span>';
+            }
+        }
+
+        function closeSyncModal() { document.getElementById('syncModal').style.display = 'none'; }
+
+        function useSyncCode() {
+            const val = document.getElementById('syncCodeInput').value;
+            if (!val.trim()) { alert("Digite um código."); return; }
+            connectSync(val);
+            closeSyncModal();
+        }
+
+        function generateSyncCode() {
+            const code = 'agenda-' + Math.random().toString(36).substring(2, 8);
+            document.getElementById('syncCodeInput').value = code;
+            connectSync(code);
+            openSyncModal();
+        }
+
+        document.getElementById('syncToggle').onclick = openSyncModal;
+
+        // ======= NOTAS =======
+
+        function openModal(key, d) {
+            selectedKey = key;
+            document.getElementById('modalDate').innerText = d + " de " + monthNames[currentMonth];
+            document.getElementById('noteInput').value = notesCache[key] || "";
+            document.getElementById('noteModal').style.display = 'flex';
+        }
+
+        function closeModal() { document.getElementById('noteModal').style.display = 'none'; }
+
+        function saveNote() {
+            if (!syncCode) { openSyncModal(); return; }
+            const txt = document.getElementById('noteInput').value.trim();
+            const ref = db.collection('agendas').doc(syncCode).collection('notes').doc(selectedKey);
+            if (txt) {
+                ref.set({ text: txt, updatedAt: firebase.firestore.FieldValue.serverTimestamp() });
+            } else {
+                ref.delete();
+            }
+            closeModal();
+        }
+
+        function deleteNote() {
+            if (!syncCode) { closeModal(); return; }
+            db.collection('agendas').doc(syncCode).collection('notes').doc(selectedKey).delete();
+            closeModal();
+        }
+
+        // ======= CALENDÁRIO =======
+
+        function render() {
+            const grid = document.getElementById('calendarGrid');
+            const display = document.getElementById('monthDisplay');
+            grid.innerHTML = '';
+            display.innerText = monthNames[currentMonth];
+
+            const first = new Date(year, currentMonth, 1).getDay();
+            const count = new Date(year, currentMonth + 1, 0).getDate();
+
+            for (let i = 0; i < 42; i++) {
+                const d = i - first + 1;
+                const cell = document.createElement('div');
+                cell.className = 'day-cell';
+
+                if (d > 0 && d <= count) {
+                    const key = year + '-' + String(currentMonth + 1).padStart(2, '0') + '-' + String(d).padStart(2, '0');
+                    const info = dataInfo[key];
+                    const wd = new Date(year, currentMonth, d).getDay();
+                    const note = notesCache[key];
+
+                    if (wd === 0) cell.classList.add('bg-sunday');
+                    else if (wd === 6) cell.classList.add('bg-saturday');
+
+                    let html = '<span class="day-num" style="color:' + (wd === 0 ? 'var(--accent-red)' : 'var(--text-main)') + '">' + d + '</span>';
+                    if (note) html += '<div class="note-dot"></div>';
+
+                    if (info) {
+                        html += '<div class="badge-status ' + info.type + '">' + info.label + '</div>';
+                    }
+
+                    cell.innerHTML = html;
+                    cell.onclick = () => openModal(key, d);
+                } else {
+                    cell.style.opacity = '0.05';
+                    cell.style.cursor = 'default';
+                }
+                grid.appendChild(cell);
+            }
+        }
+
+        document.getElementById('prev').onclick = () => { currentMonth = (currentMonth - 1 + 12) % 12; render(); };
+        document.getElementById('next').onclick = () => { currentMonth = (currentMonth + 1) % 12; render(); };
+
+        render();
+
+        if (syncCode) {
+            connectSync(syncCode);
+        } else {
+            setTimeout(openSyncModal, 500);
+        }
+
+        // ======= PWA: instalação e service worker =======
+
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js').catch((e) => console.error('Falha ao registrar service worker:', e));
+            });
+        }
+
+        let deferredPrompt = null;
+        const installBtn = document.getElementById('installBtn');
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            installBtn.style.display = 'inline-flex';
+        });
+
+        installBtn.addEventListener('click', async () => {
+            if (!deferredPrompt) return;
+            deferredPrompt.prompt();
+            await deferredPrompt.userChoice;
+            deferredPrompt = null;
+            installBtn.style.display = 'none';
+        });
+
+        window.addEventListener('appinstalled', () => {
+            installBtn.style.display = 'none';
+        });
+    </script>
+</body>
+</html>

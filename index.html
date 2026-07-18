@@ -430,7 +430,7 @@
                 <p>Agenda Oficial &middot; 2026</p>
             </div>
             <div class="header-right">
-                <button id="installBtn" class="sync-btn" title="Instalar aplicativo" style="display:none;">⬇️</button>
+                <button id="installBtn" class="sync-btn" title="Instalar aplicativo">⬇️</button>
                 <button id="notifyBtn" class="sync-btn" title="Notificações">
                     🔔<span id="notifyDot" class="sync-dot sync-off"></span>
                 </button>
@@ -501,6 +501,17 @@
                 <button onclick="useSyncCode()" class="btn-save">Usar este código</button>
                 <button onclick="generateSyncCode()" class="btn-secondary">Gerar novo</button>
             </div>
+        </div>
+    </div>
+
+    <!-- Modal de instalação -->
+    <div id="installModal" class="modal-overlay" onclick="if(event.target == this) closeInstallModal()">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3 style="margin:0; font-size: 18px;">Instalar o app</h3>
+                <button onclick="closeInstallModal()" style="background:none; border:none; font-size: 20px; cursor:pointer; color:#ccc;">&times;</button>
+            </div>
+            <div id="installSteps" class="sync-info"></div>
         </div>
     </div>
 
@@ -830,22 +841,59 @@
         let deferredPrompt = null;
         const installBtn = document.getElementById('installBtn');
 
+        function isStandalone() {
+            return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+        }
+
+        function openInstallModal() {
+            const steps = document.getElementById('installSteps');
+            const ua = navigator.userAgent;
+            const isIOS = /iPhone|iPad|iPod/.test(ua);
+            const isAndroid = /Android/.test(ua);
+
+            if (isStandalone()) {
+                steps.innerHTML = 'O app já está instalado neste aparelho. 🎉';
+            } else if (isIOS) {
+                steps.innerHTML =
+                    '<b>No iPhone/iPad (Safari):</b><br>' +
+                    '1. Toque no ícone de compartilhar 📤 na barra do navegador.<br>' +
+                    '2. Escolha <b>"Adicionar à Tela de Início"</b>.<br>' +
+                    '3. Toque em <b>Adicionar</b>.<br><br>' +
+                    '<span style="color:var(--ink-muted)">Precisa ser feito pelo Safari — não funciona pelo Chrome no iPhone.</span>';
+            } else if (isAndroid) {
+                steps.innerHTML =
+                    '<b>No Android (Chrome):</b><br>' +
+                    '1. Toque no menu ⋮ no canto superior direito.<br>' +
+                    '2. Escolha <b>"Instalar aplicativo"</b> ou <b>"Adicionar à tela inicial"</b>.<br>' +
+                    '3. Confirme tocando em <b>Instalar</b>.';
+            } else {
+                steps.innerHTML =
+                    '<b>No computador (Chrome/Edge):</b><br>' +
+                    '1. Clique no ícone de instalar ⊕ que aparece na barra de endereço.<br>' +
+                    '2. Ou vá no menu ⋮ → <b>"Instalar Agenda Boa Vista..."</b>.';
+            }
+            document.getElementById('installModal').style.display = 'flex';
+        }
+
+        function closeInstallModal() { document.getElementById('installModal').style.display = 'none'; }
+
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
-            installBtn.style.display = 'inline-flex';
         });
 
         installBtn.addEventListener('click', async () => {
-            if (!deferredPrompt) return;
-            deferredPrompt.prompt();
-            await deferredPrompt.userChoice;
-            deferredPrompt = null;
-            installBtn.style.display = 'none';
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                await deferredPrompt.userChoice;
+                deferredPrompt = null;
+            } else {
+                openInstallModal();
+            }
         });
 
         window.addEventListener('appinstalled', () => {
-            installBtn.style.display = 'none';
+            deferredPrompt = null;
         });
     </script>
 </body>
